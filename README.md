@@ -1,1 +1,1 @@
-m webapp completo de planner mensal de progresso para academia com IA e machine learning, focado em objetivos realistas (hipertrofia, emagrecimento, etc.), biotipos, treinos, dietas e estimativas de "natural máximo". · Construído com Manus
+m webapp completo de planner mensal de progresso para academia com IA e machine learning, focado em objetivos realistas (hipertrofia, emagrecimento, etc.), biotipos, treinos, dietas e estimativas de "natural máximo". ·
