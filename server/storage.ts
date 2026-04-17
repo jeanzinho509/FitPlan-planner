@@ -46,7 +46,11 @@ function ensureTrailingSlash(value: string): string {
 }
 
 function normalizeKey(relKey: string): string {
-  return relKey.replace(/^\/+/, "");
+  const normalized = relKey.replace(/^\/+/, "");
+  if (normalized.includes("..")) {
+    throw new Error("Invalid key: path traversal is not allowed");
+  }
+  return normalized;
 }
 
 function toFormData(
