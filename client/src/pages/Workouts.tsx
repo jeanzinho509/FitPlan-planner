@@ -4,11 +4,41 @@ import { z } from "zod";
 import { trpc } from "@/lib/trpc";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { toast } from "sonner";
 import { Textarea } from "@/components/ui/textarea";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 const workoutSchema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -25,19 +55,19 @@ export default function Workouts() {
       utils.workouts.invalidate();
       form.reset();
     },
-    onError: (err) => {
-        toast.error(`Error: ${err.message}`);
-    }
+    onError: err => {
+      toast.error(`Error: ${err.message}`);
+    },
   });
 
   const deleteMutation = trpc.workouts.delete.useMutation({
-      onSuccess: () => {
-          toast.success("Workout deleted");
-          utils.workouts.invalidate();
-      },
-      onError: (err) => {
-        toast.error(`Error: ${err.message}`);
-      }
+    onSuccess: () => {
+      toast.success("Workout deleted");
+      utils.workouts.invalidate();
+    },
+    onError: err => {
+      toast.error(`Error: ${err.message}`);
+    },
   });
 
   const form = useForm<z.infer<typeof workoutSchema>>({
@@ -65,7 +95,10 @@ export default function Workouts() {
           </CardHeader>
           <CardContent>
             <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+              <form
+                onSubmit={form.handleSubmit(onSubmit)}
+                className="space-y-4"
+              >
                 <FormField
                   control={form.control}
                   name="name"
@@ -92,13 +125,17 @@ export default function Workouts() {
                     </FormItem>
                   )}
                 />
-                 <FormField
+                <FormField
                   control={form.control}
                   name="difficulty"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Difficulty</FormLabel>
-                      <Select onValueChange={field.onChange} defaultValue={field.value} value={field.value}>
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                        value={field.value}
+                      >
                         <FormControl>
                           <SelectTrigger>
                             <SelectValue placeholder="Select difficulty" />
@@ -106,7 +143,9 @@ export default function Workouts() {
                         </FormControl>
                         <SelectContent>
                           <SelectItem value="beginner">Beginner</SelectItem>
-                          <SelectItem value="intermediate">Intermediate</SelectItem>
+                          <SelectItem value="intermediate">
+                            Intermediate
+                          </SelectItem>
                           <SelectItem value="advanced">Advanced</SelectItem>
                         </SelectContent>
                       </Select>
@@ -127,23 +166,53 @@ export default function Workouts() {
             <CardTitle>My Workouts</CardTitle>
           </CardHeader>
           <CardContent>
-             {isLoading ? (
-                 <p>Loading...</p>
-             ) : workouts?.length === 0 ? (
-                 <p className="text-muted-foreground">No workouts found.</p>
-             ) : (
-                 <ul className="space-y-4">
-                     {workouts?.map((workout) => (
-                         <li key={workout.id} className="flex items-center justify-between border p-4 rounded-lg">
-                             <div>
-                                 <p className="font-semibold">{workout.name}</p>
-                                 <p className="text-sm text-muted-foreground">{workout.difficulty}</p>
-                             </div>
-                             <Button variant="destructive" size="sm" onClick={() => deleteMutation.mutate(workout.id)}>Delete</Button>
-                         </li>
-                     ))}
-                 </ul>
-             )}
+            {isLoading ? (
+              <p>Loading...</p>
+            ) : workouts?.length === 0 ? (
+              <p className="text-muted-foreground">No workouts found.</p>
+            ) : (
+              <ul className="space-y-4">
+                {workouts?.map(workout => (
+                  <li
+                    key={workout.id}
+                    className="flex items-center justify-between border p-4 rounded-lg"
+                  >
+                    <div>
+                      <p className="font-semibold">{workout.name}</p>
+                      <p className="text-sm text-muted-foreground">
+                        {workout.difficulty}
+                      </p>
+                    </div>
+                    <AlertDialog>
+                      <AlertDialogTrigger asChild>
+                        <Button variant="destructive" size="sm">
+                          Delete
+                        </Button>
+                      </AlertDialogTrigger>
+                      <AlertDialogContent>
+                        <AlertDialogHeader>
+                          <AlertDialogTitle>
+                            Are you absolutely sure?
+                          </AlertDialogTitle>
+                          <AlertDialogDescription>
+                            This action cannot be undone. This will permanently
+                            delete your workout.
+                          </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                          <AlertDialogCancel>Cancel</AlertDialogCancel>
+                          <AlertDialogAction
+                            onClick={() => deleteMutation.mutate(workout.id)}
+                          >
+                            Continue
+                          </AlertDialogAction>
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>
+                  </li>
+                ))}
+              </ul>
+            )}
           </CardContent>
         </Card>
       </div>
