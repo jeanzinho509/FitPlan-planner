@@ -6,7 +6,7 @@
 
 ## 📸 Preview
 
-> *(Screenshots e GIFs do app em breve)*
+> _(Screenshots e GIFs do app em breve)_
 
 ---
 
@@ -22,37 +22,41 @@ Diferente dos apps genéricos de fitness, o FitPlan combina:
 - **Dashboard orientado a dados** — 5 métricas em tempo real, compliance diário, progresso visual
 
 ---
+
 ## 🧱 Stack Técnica
 
 ### Frontend
-| Tecnologia | Uso |
-|---|---|
-| React 19 + TypeScript | UI e lógica de componentes |
-| TailwindCSS 4 | Estilização utilitária |
-| shadcn/ui | Design system de componentes |
-| Wouter | Roteamento leve |
-| TanStack Query + tRPC | Data fetching type-safe |
-| Recharts | Gráficos de progresso |
-| Framer Motion | Animações e transições |
-| React Hook Form + Zod | Formulários com validação |
+
+| Tecnologia            | Uso                          |
+| --------------------- | ---------------------------- |
+| React 19 + TypeScript | UI e lógica de componentes   |
+| TailwindCSS 4         | Estilização utilitária       |
+| shadcn/ui             | Design system de componentes |
+| Wouter                | Roteamento leve              |
+| TanStack Query + tRPC | Data fetching type-safe      |
+| Recharts              | Gráficos de progresso        |
+| Framer Motion         | Animações e transições       |
+| React Hook Form + Zod | Formulários com validação    |
 
 ### Backend
-| Tecnologia | Uso |
-|---|---|
-| Express.js | Servidor HTTP |
-| tRPC | API type-safe fim-a-fim |
-| Drizzle ORM | Queries type-safe para PostgreSQL |
-| Supabase (PostgreSQL) | Banco de dados principal |
-| JWT / José | Autenticação e sessões |
-| Zod | Validação de schemas |
+
+| Tecnologia            | Uso                               |
+| --------------------- | --------------------------------- |
+| Express.js            | Servidor HTTP                     |
+| tRPC                  | API type-safe fim-a-fim           |
+| Drizzle ORM           | Queries type-safe para PostgreSQL |
+| Supabase (PostgreSQL) | Banco de dados principal          |
+| JWT / José            | Autenticação e sessões            |
+| Zod                   | Validação de schemas              |
 
 ### Dev & Build
-| Tecnologia | Uso |
-|---|---|
-| Vite 7 | Build e dev server |
-| pnpm | Gerenciamento de pacotes |
-| TypeScript 5.9 | Type safety full-stack |
-| Vitest | Testes unitários |
+
+| Tecnologia     | Uso                      |
+| -------------- | ------------------------ |
+| Vite 7         | Build e dev server       |
+| pnpm           | Gerenciamento de pacotes |
+| TypeScript 5.9 | Type safety full-stack   |
+| Vitest         | Testes unitários         |
 
 ---
 
@@ -82,21 +86,22 @@ fitplan/
 ```
 
 ---
+
 ## ✅ Status de Desenvolvimento
 
 ```
 ████████████░░░░░░░░░  ~40% completo
 ```
 
-| Fase | Status | Descrição |
-|---|---|---|
-| **Fase 1** — Database Schema | ✅ Completo | 17 tabelas, relações, seeds, índices |
-| **Fase 2** — Onboarding | ✅ Completo | 6 steps com validação por etapa e save progressivo |
-| **Fase 2.5** — Dashboard Base | ✅ Completo | System Status, Monthly Adaptation, Daily Compliance, Progress Indicators |
-| **Fase 3** — Sistema de Treino | 🔄 Em progresso | Workout Planner, Exercise Library, Logger |
-| **Fase 4** — Nutrição | ⬜ Pendente | Meal Planner, Food Logger, Macros |
-| **Fase 5** — IA Avançada | ⬜ Pendente | Geração de planos, análise preditiva |
-| **Fase 6** — Polish & Launch | ⬜ Pendente | PWA, testes, otimização |
+| Fase                           | Status          | Descrição                                                                |
+| ------------------------------ | --------------- | ------------------------------------------------------------------------ |
+| **Fase 1** — Database Schema   | ✅ Completo     | 17 tabelas, relações, seeds, índices                                     |
+| **Fase 2** — Onboarding        | ✅ Completo     | 6 steps com validação por etapa e save progressivo                       |
+| **Fase 2.5** — Dashboard Base  | ✅ Completo     | System Status, Monthly Adaptation, Daily Compliance, Progress Indicators |
+| **Fase 3** — Sistema de Treino | 🔄 Em progresso | Workout Planner, Exercise Library, Logger                                |
+| **Fase 4** — Nutrição          | ⬜ Pendente     | Meal Planner, Food Logger, Macros                                        |
+| **Fase 5** — IA Avançada       | ⬜ Pendente     | Geração de planos, análise preditiva                                     |
+| **Fase 6** — Polish & Launch   | ⬜ Pendente     | PWA, testes, otimização                                                  |
 
 ---
 
@@ -105,17 +110,20 @@ fitplan/
 O FitPlan usa um sistema de IA baseado em regras científicas (não LLM puro):
 
 ### Natural Maximum Calculator
+
 - **FFMI Model** — limite natural ~25 FFMI
 - **Martin Berkhan Model** — estimativa de peso máximo por altura
 - **Casey Butt Model** — estimativa baseada em estrutura óssea
 
 ### AI Insights Engine
+
 - Detecção de platô (3-4 semanas sem progresso)
 - Análise de consistência de treino
 - Avaliação de recuperação (sono, estresse, volume)
 - Análise de progressão de peso vs objetivo
 
 ### Recovery Score
+
 ```
 Base: 100%
 - Sono < 6h:    -30%  |  Sono < 7h:  -15%  |  Sono < 8h:   -5%
