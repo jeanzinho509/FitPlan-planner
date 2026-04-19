@@ -1,0 +1,3 @@
+## 2026-04-19 - Icon-only Buttons Missing ARIA Labels
+**Learning:** Several icon-only buttons across the app (like the send message button in the chat interface and the theme toggle in the showcase) lacked `aria-label` attributes, making them inaccessible to screen readers.
+**Action:** Always verify that `<Button size="icon">` components or any button relying solely on visual icons have descriptive `aria-label` or `title` attributes added to them.
