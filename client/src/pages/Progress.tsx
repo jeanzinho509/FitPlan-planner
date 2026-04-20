@@ -46,7 +46,7 @@ export default function Progress() {
       }
   });
 
-  const form = useForm<z.infer<typeof progressSchema>>({
+  const form = useForm<z.input<typeof progressSchema>>({
     resolver: zodResolver(progressSchema),
     defaultValues: {
       date: new Date().toISOString().split('T')[0],
@@ -55,8 +55,8 @@ export default function Progress() {
     },
   });
 
-  function onSubmit(values: z.infer<typeof progressSchema>) {
-    mutation.mutate(values);
+  function onSubmit(values: z.input<typeof progressSchema>) {
+    mutation.mutate(values as z.infer<typeof progressSchema>);
   }
 
   const chartData = logs ? logs.slice().reverse().map(log => ({
@@ -98,7 +98,7 @@ export default function Progress() {
                         <FormItem>
                           <FormLabel>Weight (kg)</FormLabel>
                           <FormControl>
-                            <Input type="number" step="0.1" {...field} />
+                            <Input type="number" step="0.1" {...field} value={field.value as number | string | undefined ?? ""} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -111,7 +111,7 @@ export default function Progress() {
                         <FormItem>
                           <FormLabel>Body Fat (%)</FormLabel>
                           <FormControl>
-                            <Input type="number" step="0.1" {...field} />
+                            <Input type="number" step="0.1" {...field} value={field.value as number | string | undefined ?? ""} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
