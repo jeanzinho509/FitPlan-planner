@@ -39,7 +39,7 @@ export default function Diets() {
       }
   });
 
-  const form = useForm<z.infer<typeof dietSchema>>({
+  const form = useForm<z.input<typeof dietSchema>>({
     resolver: zodResolver(dietSchema),
     defaultValues: {
       name: "",
@@ -48,8 +48,8 @@ export default function Diets() {
     },
   });
 
-  function onSubmit(values: z.infer<typeof dietSchema>) {
-    mutation.mutate(values);
+  function onSubmit(values: z.input<typeof dietSchema>) {
+    mutation.mutate(values as z.infer<typeof dietSchema>);
   }
 
   return (
@@ -98,7 +98,7 @@ export default function Diets() {
                     <FormItem>
                       <FormLabel>Daily Calories</FormLabel>
                         <FormControl>
-                          <Input type="number" {...field} />
+                          <Input type="number" {...field} value={field.value as number | string | undefined ?? ""} />
                         </FormControl>
                       <FormMessage />
                     </FormItem>
