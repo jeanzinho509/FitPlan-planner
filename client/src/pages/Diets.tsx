@@ -4,8 +4,21 @@ import { z } from "zod";
 import { trpc } from "@/lib/trpc";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { toast } from "sonner";
 import { Textarea } from "@/components/ui/textarea";
 
@@ -24,19 +37,19 @@ export default function Diets() {
       utils.diets.invalidate();
       form.reset();
     },
-    onError: (err) => {
-        toast.error(`Error: ${err.message}`);
-    }
+    onError: err => {
+      toast.error(`Error: ${err.message}`);
+    },
   });
 
   const deleteMutation = trpc.diets.delete.useMutation({
-      onSuccess: () => {
-          toast.success("Diet deleted");
-          utils.diets.invalidate();
-      },
-      onError: (err) => {
-        toast.error(`Error: ${err.message}`);
-      }
+    onSuccess: () => {
+      toast.success("Diet deleted");
+      utils.diets.invalidate();
+    },
+    onError: err => {
+      toast.error(`Error: ${err.message}`);
+    },
   });
 
   const form = useForm<z.input<typeof dietSchema>>({
@@ -64,7 +77,10 @@ export default function Diets() {
           </CardHeader>
           <CardContent>
             <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+              <form
+                onSubmit={form.handleSubmit(onSubmit)}
+                className="space-y-4"
+              >
                 <FormField
                   control={form.control}
                   name="name"
@@ -91,15 +107,21 @@ export default function Diets() {
                     </FormItem>
                   )}
                 />
-                 <FormField
+                <FormField
                   control={form.control}
                   name="dailyCalories"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Daily Calories</FormLabel>
-                        <FormControl>
-                          <Input type="number" {...field} value={field.value as number | string | undefined ?? ""} />
-                        </FormControl>
+                      <FormControl>
+                        <Input
+                          type="number"
+                          {...field}
+                          value={
+                            (field.value as number | string | undefined) ?? ""
+                          }
+                        />
+                      </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -117,23 +139,34 @@ export default function Diets() {
             <CardTitle>My Diets</CardTitle>
           </CardHeader>
           <CardContent>
-             {isLoading ? (
-                 <p>Loading...</p>
-             ) : diets?.length === 0 ? (
-                 <p className="text-muted-foreground">No diets found.</p>
-             ) : (
-                 <ul className="space-y-4">
-                     {diets?.map((diet) => (
-                         <li key={diet.id} className="flex items-center justify-between border p-4 rounded-lg">
-                             <div>
-                                 <p className="font-semibold">{diet.name}</p>
-                                 <p className="text-sm text-muted-foreground">{diet.dailyCalories} kcal</p>
-                             </div>
-                             <Button variant="destructive" size="sm" onClick={() => deleteMutation.mutate(diet.id)}>Delete</Button>
-                         </li>
-                     ))}
-                 </ul>
-             )}
+            {isLoading ? (
+              <p>Loading...</p>
+            ) : diets?.length === 0 ? (
+              <p className="text-muted-foreground">No diets found.</p>
+            ) : (
+              <ul className="space-y-4">
+                {diets?.map(diet => (
+                  <li
+                    key={diet.id}
+                    className="flex items-center justify-between border p-4 rounded-lg"
+                  >
+                    <div>
+                      <p className="font-semibold">{diet.name}</p>
+                      <p className="text-sm text-muted-foreground">
+                        {diet.dailyCalories} kcal
+                      </p>
+                    </div>
+                    <Button
+                      variant="destructive"
+                      size="sm"
+                      onClick={() => deleteMutation.mutate(diet.id)}
+                    >
+                      Delete
+                    </Button>
+                  </li>
+                ))}
+              </ul>
+            )}
           </CardContent>
         </Card>
       </div>
