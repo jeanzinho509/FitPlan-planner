@@ -6,3 +6,7 @@
 **Prevention:**
 - Standardize a secure Express baseline across microservices that disables server signatures.
 - Enforce secure defaults for any missing sensitive environment variable, preferably with cryptographically secure PRNGs.
+## 2024-05-24 - [Medium] Fix Express error handling to prevent stack trace leaks
+**Vulnerability:** Express default error handler or missing custom error handler can leak sensitive stack trace information to end users on production, potentially exposing internal implementation details. Express also crashes if standard error response sending is attempted when headers have already been sent.
+**Learning:** Custom Express global error handlers must be placed at the very end of the middleware chain. Defensively checking `res.headersSent` and delegating to `next(err)` if true avoids application crashes while returning secure, standardized error responses without leaking stack traces.
+**Prevention:** Always implement a custom global error handler in Express applications and ensure it checks `res.headersSent` before sending a response.
