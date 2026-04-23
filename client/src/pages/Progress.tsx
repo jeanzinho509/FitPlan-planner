@@ -4,11 +4,44 @@ import { z } from "zod";
 import { trpc } from "@/lib/trpc";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { toast } from "sonner";
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+  Legend,
+} from "recharts";
 import { format } from "date-fns";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 const progressSchema = z.object({
   date: z.string(),
@@ -31,25 +64,25 @@ export default function Progress() {
       utils.progress.invalidate();
       form.reset();
     },
-    onError: (err) => {
-        toast.error(`Error: ${err.message}`);
-    }
+    onError: err => {
+      toast.error(`Error: ${err.message}`);
+    },
   });
 
   const deleteMutation = trpc.progress.delete.useMutation({
-      onSuccess: () => {
-          toast.success("Log deleted");
-          utils.progress.invalidate();
-      },
-      onError: (err) => {
-        toast.error(`Error: ${err.message}`);
-      }
+    onSuccess: () => {
+      toast.success("Log deleted");
+      utils.progress.invalidate();
+    },
+    onError: err => {
+      toast.error(`Error: ${err.message}`);
+    },
   });
 
   const form = useForm<z.input<typeof progressSchema>>({
     resolver: zodResolver(progressSchema),
     defaultValues: {
-      date: new Date().toISOString().split('T')[0],
+      date: new Date().toISOString().split("T")[0],
       weight: 0,
       bodyFat: 0,
     },
@@ -59,10 +92,15 @@ export default function Progress() {
     mutation.mutate(values as z.infer<typeof progressSchema>);
   }
 
-  const chartData = logs ? logs.slice().reverse().map(log => ({
-      ...log,
-      dateFormatted: format(new Date(log.date), 'MM/dd'),
-  })) : [];
+  const chartData = logs
+    ? logs
+        .slice()
+        .reverse()
+        .map(log => ({
+          ...log,
+          dateFormatted: format(new Date(log.date), "MM/dd"),
+        }))
+    : [];
 
   return (
     <div className="space-y-6">
@@ -76,7 +114,10 @@ export default function Progress() {
           </CardHeader>
           <CardContent>
             <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+              <form
+                onSubmit={form.handleSubmit(onSubmit)}
+                className="space-y-4"
+              >
                 <FormField
                   control={form.control}
                   name="date"
@@ -90,35 +131,49 @@ export default function Progress() {
                     </FormItem>
                   )}
                 />
-                 <div className="grid grid-cols-2 gap-4">
-                    <FormField
-                      control={form.control}
-                      name="weight"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Weight (kg)</FormLabel>
-                          <FormControl>
-                            <Input type="number" step="0.1" {...field} value={field.value as number | string | undefined ?? ""} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="bodyFat"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Body Fat (%)</FormLabel>
-                          <FormControl>
-                            <Input type="number" step="0.1" {...field} value={field.value as number | string | undefined ?? ""} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                 </div>
-                 {/* Add more fields as needed */}
+                <div className="grid grid-cols-2 gap-4">
+                  <FormField
+                    control={form.control}
+                    name="weight"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Weight (kg)</FormLabel>
+                        <FormControl>
+                          <Input
+                            type="number"
+                            step="0.1"
+                            {...field}
+                            value={
+                              (field.value as number | string | undefined) ?? ""
+                            }
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="bodyFat"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Body Fat (%)</FormLabel>
+                        <FormControl>
+                          <Input
+                            type="number"
+                            step="0.1"
+                            {...field}
+                            value={
+                              (field.value as number | string | undefined) ?? ""
+                            }
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+                {/* Add more fields as needed */}
                 <Button type="submit" disabled={mutation.isPending}>
                   {mutation.isPending ? "Logging..." : "Log Progress"}
                 </Button>
@@ -128,53 +183,97 @@ export default function Progress() {
         </Card>
 
         <Card className="col-span-1 md:col-span-2 lg:col-span-1">
-             <CardHeader>
+          <CardHeader>
             <CardTitle>Recent Logs</CardTitle>
           </CardHeader>
-           <CardContent>
-                {isLoading ? (
-                     <p>Loading...</p>
-                 ) : logs?.length === 0 ? (
-                     <p className="text-muted-foreground">No logs found.</p>
-                 ) : (
-                     <ul className="space-y-4 max-h-[300px] overflow-auto">
-                         {logs?.map((log) => (
-                             <li key={log.id} className="flex items-center justify-between border p-4 rounded-lg">
-                                 <div>
-                                     <p className="font-semibold">{format(new Date(log.date), 'PPP')}</p>
-                                     <p className="text-sm text-muted-foreground">
-                                         {log.weight ? `${log.weight}kg` : ''}
-                                         {log.bodyFat ? ` - ${log.bodyFat}% BF` : ''}
-                                     </p>
-                                 </div>
-                                 <Button variant="destructive" size="sm" onClick={() => deleteMutation.mutate(log.id)}>Delete</Button>
-                             </li>
-                         ))}
-                     </ul>
-                 )}
-           </CardContent>
+          <CardContent>
+            {isLoading ? (
+              <p>Loading...</p>
+            ) : logs?.length === 0 ? (
+              <p className="text-muted-foreground">No logs found.</p>
+            ) : (
+              <ul className="space-y-4 max-h-[300px] overflow-auto">
+                {logs?.map(log => (
+                  <li
+                    key={log.id}
+                    className="flex items-center justify-between border p-4 rounded-lg"
+                  >
+                    <div>
+                      <p className="font-semibold">
+                        {format(new Date(log.date), "PPP")}
+                      </p>
+                      <p className="text-sm text-muted-foreground">
+                        {log.weight ? `${log.weight}kg` : ""}
+                        {log.bodyFat ? ` - ${log.bodyFat}% BF` : ""}
+                      </p>
+                    </div>
+                    <AlertDialog>
+                      <AlertDialogTrigger asChild>
+                        <Button variant="destructive" size="sm">
+                          Delete
+                        </Button>
+                      </AlertDialogTrigger>
+                      <AlertDialogContent>
+                        <AlertDialogHeader>
+                          <AlertDialogTitle>
+                            Are you absolutely sure?
+                          </AlertDialogTitle>
+                          <AlertDialogDescription>
+                            This action cannot be undone. This will permanently
+                            delete the progress log for{" "}
+                            {format(new Date(log.date), "MMM d, yyyy")}.
+                          </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                          <AlertDialogCancel>Cancel</AlertDialogCancel>
+                          <AlertDialogAction
+                            onClick={() => deleteMutation.mutate(log.id)}
+                            className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                          >
+                            Delete
+                          </AlertDialogAction>
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </CardContent>
         </Card>
 
         <Card className="col-span-1 md:col-span-2">
-            <CardHeader>
-                <CardTitle>Weight Progression</CardTitle>
-            </CardHeader>
-            <CardContent>
-                <div className="h-[300px] w-full">
-                    <ResponsiveContainer width="100%" height="100%">
-                        <LineChart data={chartData}>
-                             <CartesianGrid strokeDasharray="3 3" />
-                            <XAxis dataKey="dateFormatted" />
-                            <YAxis yAxisId="left" />
-                            <YAxis yAxisId="right" orientation="right" />
-                            <Tooltip />
-                            <Legend />
-                            <Line yAxisId="left" type="monotone" dataKey="weight" stroke="#8884d8" name="Weight (kg)" />
-                            <Line yAxisId="right" type="monotone" dataKey="bodyFat" stroke="#82ca9d" name="Body Fat (%)" />
-                        </LineChart>
-                    </ResponsiveContainer>
-                </div>
-            </CardContent>
+          <CardHeader>
+            <CardTitle>Weight Progression</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="h-[300px] w-full">
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart data={chartData}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="dateFormatted" />
+                  <YAxis yAxisId="left" />
+                  <YAxis yAxisId="right" orientation="right" />
+                  <Tooltip />
+                  <Legend />
+                  <Line
+                    yAxisId="left"
+                    type="monotone"
+                    dataKey="weight"
+                    stroke="#8884d8"
+                    name="Weight (kg)"
+                  />
+                  <Line
+                    yAxisId="right"
+                    type="monotone"
+                    dataKey="bodyFat"
+                    stroke="#82ca9d"
+                    name="Body Fat (%)"
+                  />
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
+          </CardContent>
         </Card>
       </div>
     </div>
