@@ -1,1 +1,4 @@
 ## 2026-04-20 - Added missing ARIA attributes and focus styles to AIChatBox\n**Learning:** The default AI chat box implementation in AIChatBox lacks basic semantic A11y support for its Textarea input and generic Send icon button, leading to poor screen reader output and limited discoverability. Furthermore, the suggested prompts buttons lacked focus visibility for keyboard navigation.\n**Action:** Add explicit `aria-label` to text areas and icon-only buttons like 'Send'. Ensure all interactive elements, like dynamically mapped generic `<button>` tags, receive `focus-visible:ring` classes for keyboard accessibility.
+## 2024-05-20 - [ARIA Labels for Icon Buttons]
+**Learning:** Icon-only buttons without aria-labels are a common accessibility gap. I found one in the ComponentShowcase page. Adding an `aria-label` provides necessary context for screen readers.
+**Action:** Always check icon-only buttons for missing `aria-label` attributes.
