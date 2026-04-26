@@ -1,5 +1,4 @@
-## 2024-05-18 - [Fix empty string fallback for JWT_SECRET]
-
-**Vulnerability:** Empty string fallback for `JWT_SECRET` in `cookieSecret` allows JWT token forgery.
-**Learning:** If the `JWT_SECRET` environment variable is not defined, an empty string is used as the default value, allowing attackers to forge JWT tokens by signing them with an empty string, compromising authentication.
-**Prevention:** Use cryptographically secure random values (e.g., `randomBytes(32).toString('hex')` via `node:crypto`) as a fallback if the environment variable is missing to prevent token forgery.
+## 2025-04-26 - CSRF Protection for Session Cookies
+**Vulnerability:** Session cookies were configured with `sameSite: "none"`, which allows cookies to be sent in cross-site requests, increasing the risk of Cross-Site Request Forgery (CSRF).
+**Learning:** For a single-origin architecture utilizing standard OAuth flows, `sameSite: "lax"` provides CSRF protection while still being compatible with OAuth redirects.
+**Prevention:** Always default session cookies to `sameSite: "lax"` (or `"strict"`) unless cross-site cookie sending is strictly required and accompanied by other CSRF mitigation strategies.
