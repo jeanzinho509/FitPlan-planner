@@ -1,3 +1,3 @@
-## 2024-05-18 - Adding Explicit Destructive Styling to shadcn/ui AlertDialogAction
-**Learning:** The default `AlertDialogAction` component in `shadcn/ui` lacks a built-in destructive styling variant. It defaults to the primary button style.
-**Action:** When using `AlertDialogAction` to confirm destructive actions (like deleting items), explicitly add classes `bg-destructive text-destructive-foreground hover:bg-destructive/90` to provide appropriate visual feedback and prevent accidental clicks.
+## 2024-05-18 - Missing destructive action confirmations
+**Learning:** Found multiple instances where destructive actions (like "Delete Workout" and "Delete Diet" and "Delete Log") are handled inconsistently. Diets and Progress deletion immediately trigger the API request on click without any confirmation. `Workouts.tsx` correctly uses an `AlertDialog`.
+**Action:** Always wrap destructive actions in an `AlertDialog` for confirmation to prevent accidental data loss and provide a consistent user experience. I will implement this for Diets and Progress.

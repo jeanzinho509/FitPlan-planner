@@ -9,6 +9,17 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { toast } from "sonner";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 import { format } from "date-fns";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 const progressSchema = z.object({
   date: z.string(),
@@ -147,7 +158,28 @@ export default function Progress() {
                                          {log.bodyFat ? ` - ${log.bodyFat}% BF` : ''}
                                      </p>
                                  </div>
-                                 <Button variant="destructive" size="sm" onClick={() => deleteMutation.mutate(log.id)}>Delete</Button>
+                                 <AlertDialog>
+                                     <AlertDialogTrigger asChild>
+                                         <Button variant="destructive" size="sm">Delete</Button>
+                                     </AlertDialogTrigger>
+                                     <AlertDialogContent>
+                                         <AlertDialogHeader>
+                                             <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                                             <AlertDialogDescription>
+                                                 This action cannot be undone. This will permanently delete the progress log for {format(new Date(log.date), 'PPP')}.
+                                             </AlertDialogDescription>
+                                         </AlertDialogHeader>
+                                         <AlertDialogFooter>
+                                             <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                             <AlertDialogAction
+                                                 onClick={() => deleteMutation.mutate(log.id)}
+                                                 className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                                             >
+                                                 Delete
+                                             </AlertDialogAction>
+                                         </AlertDialogFooter>
+                                     </AlertDialogContent>
+                                 </AlertDialog>
                              </li>
                          ))}
                      </ul>
