@@ -6,3 +6,10 @@
 **Prevention:**
 - Standardize a secure Express baseline across microservices that disables server signatures.
 - Enforce secure defaults for any missing sensitive environment variable, preferably with cryptographically secure PRNGs.
+## 2024-05-24 - [Express Server Hardening: Global Error Handler]
+**Vulnerability:** Express server did not have a global error handler, which could potentially expose stack traces or internal application details on unhandled errors, especially when used with `app.use()` in the final step of the middleware chain.
+**Learning:**
+- Always add a global `ErrorRequestHandler` at the end of the Express application middleware chain.
+- The error handler needs to defensively check `res.headersSent` and delegate to `next(err)` if headers are already sent, to avoid crashing the server.
+**Prevention:**
+- Standardize the `globalErrorHandler` pattern across microservices to log unhandled errors and return a generic 500 JSON response (e.g., `{ error: "Internal Server Error" }`) instead of raw text or stack traces.
