@@ -6,3 +6,8 @@
 **Prevention:**
 - Standardize a secure Express baseline across microservices that disables server signatures.
 - Enforce secure defaults for any missing sensitive environment variable, preferably with cryptographically secure PRNGs.
+
+## 2024-04-30 - [Missing Global Error Handler]
+**Vulnerability:** The application was lacking a global Express error handler, which could lead to leaking sensitive internal details or stack traces to users on unexpected errors.
+**Learning:** By default, Express will send back a detailed HTML response with the stack trace for unhandled errors. A custom global error handler is needed at the end of the middleware chain to catch these, log them internally, and return a generic 500 error to the client to avoid info leakage. It also must handle cases where headers have already been sent to prevent app crashes.
+**Prevention:** Always implement a global error handler middleware `app.use((err, req, res, next) => { ... })` at the end of the Express app definition, ensuring it sends a generic error payload and checks `res.headersSent`.
