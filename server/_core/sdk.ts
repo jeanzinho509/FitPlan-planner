@@ -292,10 +292,20 @@ class SDKServer {
       throw ForbiddenError("User not found");
     }
 
-    await db.upsertUser({
-      openId: user.openId,
-      lastSignedIn: signedInAt,
-    });
+    // Performance Optimization: Debounce lastSignedIn update
+    // Only update if it's been more than 24 hours since the last sign in
+    const lastSignedIn = user.lastSignedIn ? new Date(user.lastSignedIn).getTime() : 0;
+    const oneDayAgo = Date.now() - 24 * 60 * 60 * 1000;
+
+    if (lastSignedIn < oneDayAgo) {
+      // Fire and forget the update to avoid blocking the request
+      db.upsertUser({
+        openId: user.openId,
+        lastSignedIn: signedInAt,
+      }).catch((err) => {
+        console.error("[Auth] Background lastSignedIn update failed:", err);
+      });
+    }
 
     return user;
   }
