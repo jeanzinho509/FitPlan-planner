@@ -34,7 +34,7 @@ export default function Profile() {
     }
   });
 
-  const form = useForm<z.input<typeof profileSchema>>({
+  const form = useForm<z.infer<typeof profileSchema>>({
     resolver: zodResolver(profileSchema),
     defaultValues: {
       biotype: "mesomorph",
@@ -60,8 +60,8 @@ export default function Profile() {
     }
   }, [profile, form]);
 
-  function onSubmit(values: z.input<typeof profileSchema>) {
-    mutation.mutate(values as z.infer<typeof profileSchema>);
+  function onSubmit(values: z.infer<typeof profileSchema>) {
+    mutation.mutate(values);
   }
 
   if (isLoading) return <div>Loading...</div>;
@@ -132,7 +132,7 @@ export default function Profile() {
                       <FormItem>
                         <FormLabel>Height (cm)</FormLabel>
                         <FormControl>
-                            <Input type="number" {...field} value={field.value as number | string | undefined ?? ""} />
+                          <Input type="number" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -145,7 +145,7 @@ export default function Profile() {
                       <FormItem>
                         <FormLabel>Weight (kg)</FormLabel>
                         <FormControl>
-                            <Input type="number" step="0.1" {...field} value={field.value as number | string | undefined ?? ""} />
+                          <Input type="number" step="0.1" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
