@@ -80,16 +80,22 @@
     }
 
     var sanitized = {};
-    for (var k in value) {
-      if (Object.prototype.hasOwnProperty.call(value, k)) {
-        var isSensitive = CONFIG.sensitiveFields.some(function (f) {
-          return k.toLowerCase().indexOf(f) !== -1;
-        });
-        if (isSensitive) {
-          sanitized[k] = "[REDACTED]";
-        } else {
-          sanitized[k] = sanitizeValue(value[k], depth + 1);
+    var keys = Object.keys(value);
+    for (var i = 0, len = keys.length; i < len; i++) {
+      var k = keys[i];
+      var isSensitive = false;
+      var lowerK = k.toLowerCase();
+      for (var j = 0, jLen = CONFIG.sensitiveFields.length; j < jLen; j++) {
+        if (lowerK.indexOf(CONFIG.sensitiveFields[j]) !== -1) {
+          isSensitive = true;
+          break;
         }
+      }
+
+      if (isSensitive) {
+        sanitized[k] = "[REDACTED]";
+      } else {
+        sanitized[k] = sanitizeValue(value[k], depth + 1);
       }
     }
     return sanitized;
