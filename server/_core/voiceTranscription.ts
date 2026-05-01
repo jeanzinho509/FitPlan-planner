@@ -197,7 +197,7 @@ export async function transcribeAudio(
 /**
  * Helper function to get file extension from MIME type
  */
-function getFileExtension(mimeType: string): string {
+export function getFileExtension(mimeType: string): string {
   const mimeToExt: Record<string, string> = {
     'audio/webm': 'webm',
     'audio/mp3': 'mp3',
