@@ -35,9 +35,9 @@ async function startServer() {
   // Disable x-powered-by header to prevent technology fingerprinting
   app.disable("x-powered-by");
 
-  // Configure body parser with larger size limit for file uploads
-  app.use(express.json({ limit: "50mb" }));
-  app.use(express.urlencoded({ limit: "50mb", extended: true }));
+  // Configure body parser with a reasonable limit to prevent DoS attacks while allowing file uploads
+  app.use(express.json({ limit: "5mb" }));
+  app.use(express.urlencoded({ limit: "5mb", extended: true }));
   // OAuth callback under /api/oauth/callback
   registerOAuthRoutes(app);
   // tRPC API
