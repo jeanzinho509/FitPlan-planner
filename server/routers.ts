@@ -9,12 +9,16 @@ import { z } from "zod";
 
 const profileSchema = z.object({
   biotype: z.enum(["ectomorph", "mesomorph", "endomorph"]).optional(),
-  objective: z.enum(["hypertrophy", "weight_loss", "maintenance", "strength"]).optional(),
+  objective: z
+    .enum(["hypertrophy", "weight_loss", "maintenance", "strength"])
+    .optional(),
   gender: z.enum(["male", "female", "other"]).optional(),
   birthDate: z.string().optional(), // ISO Date string
   height: z.number().min(0).optional(),
   weight: z.number().min(0).optional(),
-  activityLevel: z.enum(["sedentary", "light", "moderate", "active", "very_active"]).optional(),
+  activityLevel: z
+    .enum(["sedentary", "light", "moderate", "active", "very_active"])
+    .optional(),
 });
 
 const workoutSchema = z.object({
@@ -57,37 +61,55 @@ export const appRouter = router({
     get: protectedProcedure.query(async ({ ctx }) => {
       const db = await getDb();
       if (!db) throw new Error("Database not available");
-      const profile = await db.select().from(userProfiles).where(eq(userProfiles.userId, ctx.user.id)).limit(1);
+      const profile = await db
+        .select()
+        .from(userProfiles)
+        .where(eq(userProfiles.userId, ctx.user.id))
+        .limit(1);
       return profile[0] || null;
     }),
-    update: protectedProcedure.input(profileSchema).mutation(async ({ ctx, input }) => {
-      const db = await getDb();
-      if (!db) throw new Error("Database not available");
+    update: protectedProcedure
+      .input(profileSchema)
+      .mutation(async ({ ctx, input }) => {
+        const db = await getDb();
+        if (!db) throw new Error("Database not available");
 
-      const existing = await db.select().from(userProfiles).where(eq(userProfiles.userId, ctx.user.id)).limit(1);
+        const existing = await db
+          .select()
+          .from(userProfiles)
+          .where(eq(userProfiles.userId, ctx.user.id))
+          .limit(1);
 
-      const dataToSave = {
-        ...input,
-        userId: ctx.user.id,
-        birthDate: input.birthDate ? new Date(input.birthDate) : undefined,
-      };
+        const dataToSave = {
+          ...input,
+          userId: ctx.user.id,
+          birthDate: input.birthDate ? new Date(input.birthDate) : undefined,
+        };
 
-      if (existing.length > 0) {
-        await db.update(userProfiles).set(dataToSave).where(eq(userProfiles.userId, ctx.user.id));
-      } else {
-        await db.insert(userProfiles).values(dataToSave);
-      }
-      return { success: true };
-    }),
+        if (existing.length > 0) {
+          await db
+            .update(userProfiles)
+            .set(dataToSave)
+            .where(eq(userProfiles.userId, ctx.user.id));
+        } else {
+          await db.insert(userProfiles).values(dataToSave);
+        }
+        return { success: true };
+      }),
     estimateMaxNatural: protectedProcedure.query(async ({ ctx }) => {
       const db = await getDb();
       if (!db) throw new Error("Database not available");
-      const profile = await db.select().from(userProfiles).where(eq(userProfiles.userId, ctx.user.id)).limit(1);
+      const profile = await db
+        .select()
+        .from(userProfiles)
+        .where(eq(userProfiles.userId, ctx.user.id))
+        .limit(1);
 
       if (!profile.length) return null;
 
       const p = profile[0];
-      if (!p.height || !p.weight) return { message: "Please update height and weight in profile." };
+      if (!p.height || !p.weight)
+        return { message: "Please update height and weight in profile." };
 
       const heightM = p.height / 100;
       const weightKg = p.weight;
@@ -103,9 +125,13 @@ export const appRouter = router({
 
       return {
         bmi: parseFloat(bmi.toFixed(2)),
-        message: "To get a better estimate (FFMI), please track body fat percentage in Progress.",
+        message:
+          "To get a better estimate (FFMI), please track body fat percentage in Progress.",
         // Placeholder for max potential calculation
-        maxPotentialWeightAt10PercentBF: ((25 * (heightM * heightM)) / 0.9).toFixed(2)
+        maxPotentialWeightAt10PercentBF: (
+          (25 * (heightM * heightM)) /
+          0.9
+        ).toFixed(2),
       };
     }),
   }),
@@ -113,20 +139,29 @@ export const appRouter = router({
     list: protectedProcedure.query(async ({ ctx }) => {
       const db = await getDb();
       if (!db) throw new Error("Database not available");
-      return await db.select().from(workouts).where(eq(workouts.userId, ctx.user.id));
+      return await db
+        .select()
+        .from(workouts)
+        .where(eq(workouts.userId, ctx.user.id));
     }),
-    create: protectedProcedure.input(workoutSchema).mutation(async ({ ctx, input }) => {
-      const db = await getDb();
-      if (!db) throw new Error("Database not available");
-      await db.insert(workouts).values({ ...input, userId: ctx.user.id });
-      return { success: true };
-    }),
-    delete: protectedProcedure.input(z.number()).mutation(async ({ ctx, input }) => {
-      const db = await getDb();
-      if (!db) throw new Error("Database not available");
-      await db.delete(workouts).where(and(eq(workouts.id, input), eq(workouts.userId, ctx.user.id)));
-      return { success: true };
-    }),
+    create: protectedProcedure
+      .input(workoutSchema)
+      .mutation(async ({ ctx, input }) => {
+        const db = await getDb();
+        if (!db) throw new Error("Database not available");
+        await db.insert(workouts).values({ ...input, userId: ctx.user.id });
+        return { success: true };
+      }),
+    delete: protectedProcedure
+      .input(z.number())
+      .mutation(async ({ ctx, input }) => {
+        const db = await getDb();
+        if (!db) throw new Error("Database not available");
+        await db
+          .delete(workouts)
+          .where(and(eq(workouts.id, input), eq(workouts.userId, ctx.user.id)));
+        return { success: true };
+      }),
   }),
   diets: router({
     list: protectedProcedure.query(async ({ ctx }) => {
@@ -134,41 +169,62 @@ export const appRouter = router({
       if (!db) throw new Error("Database not available");
       return await db.select().from(diets).where(eq(diets.userId, ctx.user.id));
     }),
-    create: protectedProcedure.input(dietSchema).mutation(async ({ ctx, input }) => {
-      const db = await getDb();
-      if (!db) throw new Error("Database not available");
-      await db.insert(diets).values({ ...input, userId: ctx.user.id });
-      return { success: true };
-    }),
-    delete: protectedProcedure.input(z.number()).mutation(async ({ ctx, input }) => {
-      const db = await getDb();
-      if (!db) throw new Error("Database not available");
-      await db.delete(diets).where(and(eq(diets.id, input), eq(diets.userId, ctx.user.id)));
-      return { success: true };
-    }),
+    create: protectedProcedure
+      .input(dietSchema)
+      .mutation(async ({ ctx, input }) => {
+        const db = await getDb();
+        if (!db) throw new Error("Database not available");
+        await db.insert(diets).values({ ...input, userId: ctx.user.id });
+        return { success: true };
+      }),
+    delete: protectedProcedure
+      .input(z.number())
+      .mutation(async ({ ctx, input }) => {
+        const db = await getDb();
+        if (!db) throw new Error("Database not available");
+        await db
+          .delete(diets)
+          .where(and(eq(diets.id, input), eq(diets.userId, ctx.user.id)));
+        return { success: true };
+      }),
   }),
   progress: router({
     list: protectedProcedure.query(async ({ ctx }) => {
       const db = await getDb();
       if (!db) throw new Error("Database not available");
-      return await db.select().from(progressLogs).where(eq(progressLogs.userId, ctx.user.id)).orderBy(desc(progressLogs.date));
+      return await db
+        .select()
+        .from(progressLogs)
+        .where(eq(progressLogs.userId, ctx.user.id))
+        .orderBy(desc(progressLogs.date));
     }),
-    log: protectedProcedure.input(progressSchema).mutation(async ({ ctx, input }) => {
-      const db = await getDb();
-      if (!db) throw new Error("Database not available");
-      await db.insert(progressLogs).values({
-        ...input,
-        date: new Date(input.date),
-        userId: ctx.user.id
-      });
-      return { success: true };
-    }),
-    delete: protectedProcedure.input(z.number()).mutation(async ({ ctx, input }) => {
+    log: protectedProcedure
+      .input(progressSchema)
+      .mutation(async ({ ctx, input }) => {
         const db = await getDb();
         if (!db) throw new Error("Database not available");
-        await db.delete(progressLogs).where(and(eq(progressLogs.id, input), eq(progressLogs.userId, ctx.user.id)));
+        await db.insert(progressLogs).values({
+          ...input,
+          date: new Date(input.date),
+          userId: ctx.user.id,
+        });
         return { success: true };
-    }),
+      }),
+    delete: protectedProcedure
+      .input(z.number())
+      .mutation(async ({ ctx, input }) => {
+        const db = await getDb();
+        if (!db) throw new Error("Database not available");
+        await db
+          .delete(progressLogs)
+          .where(
+            and(
+              eq(progressLogs.id, input),
+              eq(progressLogs.userId, ctx.user.id)
+            )
+          );
+        return { success: true };
+      }),
   }),
 });
 
