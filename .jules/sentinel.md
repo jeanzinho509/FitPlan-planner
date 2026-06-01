@@ -1,0 +1,4 @@
+## 2025-02-14 - Fix Empty String Fallback for cookieSecret
+**Vulnerability:** The application was using an empty string fallback for `cookieSecret` if the `JWT_SECRET` environment variable was missing (`process.env.JWT_SECRET ?? ""`).
+**Learning:** Using an empty string for security-critical secrets allows an attacker to trivially forge tokens or cookies, resulting in severe authentication and authorization vulnerabilities. Empty strings or predictable hardcoded defaults in development setups can easily leak into production if the environment variables fail to load correctly.
+**Prevention:** Always use cryptographically secure random values (e.g., `randomBytes(32).toString("hex")`) as fallbacks for security secrets when the environment variable is unexpectedly missing, ensuring the application remains secure by failing closed or randomizing the key material so deterministic attacks fail.
