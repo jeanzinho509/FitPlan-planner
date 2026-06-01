@@ -8,6 +8,17 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "sonner";
 import { Textarea } from "@/components/ui/textarea";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 const dietSchema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -129,7 +140,29 @@ export default function Diets() {
                                  <p className="font-semibold">{diet.name}</p>
                                  <p className="text-sm text-muted-foreground">{diet.dailyCalories} kcal</p>
                              </div>
-                             <Button variant="destructive" size="sm" onClick={() => deleteMutation.mutate(diet.id)}>Delete</Button>
+                             <AlertDialog>
+                               <AlertDialogTrigger asChild>
+                                 <Button variant="destructive" size="sm">Delete</Button>
+                               </AlertDialogTrigger>
+                               <AlertDialogContent>
+                                 <AlertDialogHeader>
+                                   <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                                   <AlertDialogDescription>
+                                     This action cannot be undone. This will permanently delete your diet
+                                     "{diet.name}".
+                                   </AlertDialogDescription>
+                                 </AlertDialogHeader>
+                                 <AlertDialogFooter>
+                                   <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                   <AlertDialogAction
+                                     className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                                     onClick={() => deleteMutation.mutate(diet.id)}
+                                   >
+                                     Delete
+                                   </AlertDialogAction>
+                                 </AlertDialogFooter>
+                               </AlertDialogContent>
+                             </AlertDialog>
                          </li>
                      ))}
                  </ul>
