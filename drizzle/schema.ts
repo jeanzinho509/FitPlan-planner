@@ -1,4 +1,13 @@
-import { int, mysqlEnum, mysqlTable, text, timestamp, varchar, float, date } from "drizzle-orm/mysql-core";
+import {
+  int,
+  mysqlEnum,
+  mysqlTable,
+  text,
+  timestamp,
+  varchar,
+  float,
+  date,
+} from "drizzle-orm/mysql-core";
 import { relations } from "drizzle-orm";
 
 /**
@@ -25,14 +34,27 @@ export const users = mysqlTable("users", {
 
 export const userProfiles = mysqlTable("user_profiles", {
   id: int("id").autoincrement().primaryKey(),
-  userId: int("userId").notNull().references(() => users.id),
+  userId: int("userId")
+    .notNull()
+    .references(() => users.id),
   biotype: mysqlEnum("biotype", ["ectomorph", "mesomorph", "endomorph"]),
-  objective: mysqlEnum("objective", ["hypertrophy", "weight_loss", "maintenance", "strength"]),
+  objective: mysqlEnum("objective", [
+    "hypertrophy",
+    "weight_loss",
+    "maintenance",
+    "strength",
+  ]),
   gender: mysqlEnum("gender", ["male", "female", "other"]),
   birthDate: date("birthDate"),
   height: float("height"), // in cm
   weight: float("weight"), // in kg
-  activityLevel: mysqlEnum("activityLevel", ["sedentary", "light", "moderate", "active", "very_active"]),
+  activityLevel: mysqlEnum("activityLevel", [
+    "sedentary",
+    "light",
+    "moderate",
+    "active",
+    "very_active",
+  ]),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
 });
 
@@ -41,7 +63,15 @@ export const exercises = mysqlTable("exercises", {
   name: varchar("name", { length: 255 }).notNull(),
   muscleGroup: varchar("muscleGroup", { length: 100 }).notNull(), // e.g., Chest, Back, Legs
   equipment: varchar("equipment", { length: 100 }), // e.g., Barbell, Dumbbell, Machine
-  type: mysqlEnum("type", ["strength", "cardio", "stretching", "plyometrics", "powerlifting", "olympic_weightlifting", "strongman"]),
+  type: mysqlEnum("type", [
+    "strength",
+    "cardio",
+    "stretching",
+    "plyometrics",
+    "powerlifting",
+    "olympic_weightlifting",
+    "strongman",
+  ]),
   videoUrl: varchar("videoUrl", { length: 500 }),
 });
 
@@ -57,8 +87,12 @@ export const workouts = mysqlTable("workouts", {
 
 export const workoutExercises = mysqlTable("workout_exercises", {
   id: int("id").autoincrement().primaryKey(),
-  workoutId: int("workoutId").notNull().references(() => workouts.id),
-  exerciseId: int("exerciseId").notNull().references(() => exercises.id),
+  workoutId: int("workoutId")
+    .notNull()
+    .references(() => workouts.id),
+  exerciseId: int("exerciseId")
+    .notNull()
+    .references(() => exercises.id),
   sets: int("sets").notNull(),
   reps: varchar("reps", { length: 50 }).notNull(), // e.g., "8-12" or "10"
   restTime: int("restTime"), // in seconds
@@ -87,15 +121,21 @@ export const diets = mysqlTable("diets", {
 
 export const dietMeals = mysqlTable("diet_meals", {
   id: int("id").autoincrement().primaryKey(),
-  dietId: int("dietId").notNull().references(() => diets.id),
-  mealId: int("mealId").notNull().references(() => meals.id),
+  dietId: int("dietId")
+    .notNull()
+    .references(() => diets.id),
+  mealId: int("mealId")
+    .notNull()
+    .references(() => meals.id),
   mealTime: varchar("mealTime", { length: 50 }), // e.g., "Breakfast", "Lunch", "Dinner", "Snack"
   order: int("order").notNull(),
 });
 
 export const progressLogs = mysqlTable("progress_logs", {
   id: int("id").autoincrement().primaryKey(),
-  userId: int("userId").notNull().references(() => users.id),
+  userId: int("userId")
+    .notNull()
+    .references(() => users.id),
   date: date("date").notNull(),
   weight: float("weight"),
   bodyFat: float("bodyFat"),
@@ -134,16 +174,19 @@ export const workoutsRelations = relations(workouts, ({ one, many }) => ({
   exercises: many(workoutExercises),
 }));
 
-export const workoutExercisesRelations = relations(workoutExercises, ({ one }) => ({
-  workout: one(workouts, {
-    fields: [workoutExercises.workoutId],
-    references: [workouts.id],
-  }),
-  exercise: one(exercises, {
-    fields: [workoutExercises.exerciseId],
-    references: [exercises.id],
-  }),
-}));
+export const workoutExercisesRelations = relations(
+  workoutExercises,
+  ({ one }) => ({
+    workout: one(workouts, {
+      fields: [workoutExercises.workoutId],
+      references: [workouts.id],
+    }),
+    exercise: one(exercises, {
+      fields: [workoutExercises.exerciseId],
+      references: [exercises.id],
+    }),
+  })
+);
 
 export const dietsRelations = relations(diets, ({ one, many }) => ({
   user: one(users, {
@@ -170,7 +213,6 @@ export const progressLogsRelations = relations(progressLogs, ({ one }) => ({
     references: [users.id],
   }),
 }));
-
 
 export type User = typeof users.$inferSelect;
 export type InsertUser = typeof users.$inferInsert;
