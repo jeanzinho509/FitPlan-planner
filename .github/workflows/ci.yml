@@ -31,6 +31,12 @@ jobs:
       - name: Rodar testes e métricas
         run: pnpm run test:coverage
 
+        env:
+          DATABASE_URL: "postgresql://postgres:postgres@localhost:5432/dummy"
+          SESSION_SECRET: "segredo-ficticio-para-testes"
+          VITE_SUPABASE_URL: "https://teste.supabase.co"
+          VITE_SUPABASE_ANON_KEY: "chave-falsa"
+
       - name: Salvar relatório de cobertura
         uses: actions/upload-artifact@v4
         with:
