@@ -1,0 +1,38 @@
+name: Fitplan CI - Qualidade de Software
+
+on:
+  push:
+    branches: [ "main", "updates" ]
+  pull_request:
+    branches: [ "main", "updates" ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v4
+
+      - name: Instalar pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 9
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+
+      - name: Instalar dependências
+        run: pnpm install
+
+      - name: Rodar testes e métricas
+        run: pnpm run test:coverage
+
+      - name: Salvar relatório de cobertura
+        uses: actions/upload-artifact@v4
+        with:
+          name: relatorio-cobertura
+          path: coverage/
