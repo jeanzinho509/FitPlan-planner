@@ -14,10 +14,10 @@ jobs:
       - name: Checkout do código
         uses: actions/checkout@v4
 
-      - name: Instalar pnpm
+            - name: Instalar pnpm
         uses: pnpm/action-setup@v3
         with:
-          version: 9
+          version: 10
 
       - name: Configurar Node.js
         uses: actions/setup-node@v4
