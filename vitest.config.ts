@@ -13,12 +13,13 @@ export default defineConfig({
     },
   },
   test: {
-   globals: true,
-    environment: 'node', // ou 'jsdom' se estiver testando componentes do React
+    include: ['shared/**/*.test.ts'], // <-- ADICIONE ESTA LINHA AQUI
+    globals: true,
+    environment: 'node',
     coverage: {
       provider: 'v8',
-      reporter: ['text', 'json', 'html'], // O 'html' gera a página bonitona pro print!
-      include: ['shared/**/*.ts'], // Garante que ele vai olhar a pasta que criamos
+      reporter: ['text', 'json', 'html'],
+      include: ['shared/**/*.ts'], 
+    },
   },
- },
 });
