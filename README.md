@@ -6,7 +6,8 @@
 
 ## 📸 Preview
 
-> *(Screenshots e GIFs do app em breve)*
+<img width="890" height="601" alt="image" src="https://github.com/user-attachments/assets/883539bd-9202-474f-bd52-e8dd58b2164c" />
+
 
 ---
 
