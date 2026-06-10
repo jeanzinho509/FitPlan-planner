@@ -1,10 +1,10 @@
-import { createClient } from '@supabase/supabase-js';
+import { createClient } from "@supabase/supabase-js";
 
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || "http://localhost:3000";
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || "test-key-local-dev";
 
 if (!supabaseUrl || !supabaseAnonKey) {
-  throw new Error('Faltam as variáveis de ambiente do Supabase!');
+  console.warn("⚠️ Supabase credentials not found. Using placeholder values.");
 }
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey);

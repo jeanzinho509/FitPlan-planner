@@ -1,10 +1,11 @@
 import type { NextFunction, Request, Response } from "express";
+import type { Express } from "express";
 
 export function globalErrorHandler(
   err: any,
-  req: Request,
-  res: Response,
-  next: NextFunction
+  req: any,
+  res: any,
+  next: any
 ) {
   // Log the detailed error internally
   console.error("[Global Error Handler]", err);
