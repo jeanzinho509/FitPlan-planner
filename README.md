@@ -1,5 +1,4 @@
-# 🏋️ FitPlan — AI Fitness Planner & Monthly Progress Tracker
-
+# 🏋️ FitPlan — AI-Assisted Fitness & Progress Planner
 > Webapp completo de planejamento mensal de progresso para academia com IA e machine learning, focado em objetivos realistas, biotipos, treinos, dietas e estimativas de "natural máximo".
 
 ---
